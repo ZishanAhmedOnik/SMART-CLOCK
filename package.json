@@ -1,0 +1,15 @@
+{
+  "name": "aos",
+  "version": "1.0.0",
+  "description": "simple analog clock",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Zishan Ahmed Onik",
+  "license": "ISC",
+  "devDependencies": {
+    "connect": "^3.6.0",
+    "serve-static": "^1.12.1"
+  }
+}

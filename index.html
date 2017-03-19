@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+        <script src="bower_components/angular/angular.min.js"></script>
+        <script src="bower_components/angular-ui-clock/dist/angular-clock.js"></script>
+
+        <script src="https://apis.google.com/js/api.js"></script>
+
+        <link rel="stylesheet" href="bower_components/angular-ui-clock/dist/angular-clock.css"/>
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css"/>
+
+        <link href="http://fonts.googleapis.com/css?family=Syncopate:400,700" rel="stylesheet" type="text/css">
+
+        <title>SMART CLOCK</title>
+        <!--<style>
+            .mydiv {
+                width: 90px;
+            }
+        </style>-->
+    </head>
+
+    <body ng-app="myapp" ng-controller="appController">
+        <!--<div class="row">
+            <div class="mydiv col-sm-1" style="border: solid;">
+                <ds-widget-clock show-analog></ds-widget-clock>
+                <div>{{ clock | date:'HH:mm:ss' }}</div>
+            </div>
+
+            <div class="col-sm-1" style="border: solid;">
+                <h1>HI</h1>
+            </div>
+        </div>-->
+
+        <table class="table" border="1">
+            <tr>
+                <td>
+                    <div class="mydiv">
+                        <ds-widget-clock show-analog></ds-widget-clock>
+                        <div style="text-align: center;">{{ clock | date:'hh:mm:ss' }}</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div style="text-align: center;">
+                        <button class="btn btn-success" ng-click="isLoggedIn ? logout() : login()">{{ buttonStr }}</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </body>
+
+    <script>
+        var app = angular.module("myapp", ['ds.clock']);
+        app.controller("appController", function($scope, $interval) {
+            var CLIENT_ID = '513880758862-364s789hashsaemstnv59po2un8gjo1l.apps.googleusercontent.com';
+            var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+            var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+
+            $scope.isLoggedIn = false;
+            $scope.buttonStr = 'SIGN IN';
+
+            angular.element(function() {
+                console.log('PAGE LOADING COMPLETE!');
+                handleClienLoad();
+            });
+
+            $scope.login = function() {
+                $scope.buttonStr = 'SIGN OUT';
+                $scope.isLoggedIn = true;
+                gapi.auth2.getAuthInstance().signIn();
+            }
+
+            $scope.logout = function() {
+                $scope.buttonStr = 'SIGN IN';
+                $scope.isLoggedIn = false;
+                gapi.auth2.getAuthInstance().signOut();
+            }
+
+            function handleClienLoad() {
+                gapi.load('client:auth2', initClient);
+            }
+
+            function initClient() {
+                gapi.client.init({
+                    discoveryDocs: DISCOVERY_DOCS,
+                    clientId: CLIENT_ID,
+                    scope: SCOPES
+                }).then(function() {
+                    gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+
+                    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+                });
+            }
+
+            function updateSigninStatus(isSignedIn) {
+                if(isSignedIn) {
+                    console.log('SIGN IN');
+                    $scope.isLoggedIn = true;
+                }
+                else {
+                    console.log('LOGGED OUT');
+                    $scope.isLoggedIn = false;
+                }
+            }
+
+            function appendPre(message) {
+                var pre = document.getElementById('content');
+                var textContent = document.createTextNode(message + '\n');
+                pre.appendChild(textContent);
+            }
+
+            var tick = function() {
+                $scope.clock = Date.now();
+            }
+            tick();
+            $interval(tick, 1000);
+        });
+    </script>
+</html>
