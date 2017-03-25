@@ -1,4 +1,5 @@
-const { app, BrowserWindow } = require('electron')
+const electron = require('electron')
+const { app, BrowserWindow } = electron
 const path = require('path')
 const url = require('url')
 
@@ -8,13 +9,20 @@ var serverStatic = require('serve-static')
 let win;
 
 function createWindow() {
-    win = new BrowserWindow({ 
-        width: 320, 
-        height: 240,
+    const {Width, Height} = electron.screen.getPrimaryDisplay().workAreaSize
+
+    win = new BrowserWindow({ Width, Height,
         webPreferences: {
             nodeIntegration: false
-        }
+        },
+	fullscreen: true,
+	frame: false,
+	toolbar: false,
+	'auto-hide-menu-bar': true
      });
+
+     win.setMenuBarVisibility(false);
+     win.setAutoHideMenuBar(true);
     
     /*win.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),

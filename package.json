@@ -10,6 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "connect": "^3.6.0",
+    "electron": "^1.6.2",
     "serve-static": "^1.12.1"
   }
 }
