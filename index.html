@@ -17,11 +17,16 @@
         <link href="http://fonts.googleapis.com/css?family=Syncopate:400,700" rel="stylesheet" type="text/css">
 
         <title>SMART CLOCK</title>
-        <!--<style>
-            .mydiv {
-                width: 90px;
+        <style>
+            .userInfoDivVisible {
+                text-align: center;
             }
-        </style>-->
+
+            .userInfoDivHidden {
+                visibility: hidden;
+            }
+
+        </style>
     </head>
 
     <body ng-app="myapp" ng-controller="appController">
@@ -36,18 +41,22 @@
             </div>
         </div>-->
 
-        <table class="table" border="1">
+        <table class="table" border="1" style="height: 80%">
             <tr>
-                <td>
+                <td style="width: 40%">
                     <div class="mydiv">
                         <ds-widget-clock show-analog></ds-widget-clock>
                         <div style="text-align: center;">{{ clock | date:'hh:mm:ss' }}</div>
                     </div>
                 </td>
 
-                <td>
+                <td style="width: 60%">
                     <div style="text-align: center;">
                         <button class="btn btn-success" ng-click="isLoggedIn ? logout() : login()">{{ buttonStr }}</button>
+                    </div>
+
+                    <div class="{{ isLoggedIn ? 'userInfoDivVisible' : 'userInfoDivHidden' }}">
+                        Hello {{ UserName }}
                     </div>
                 </td>
             </tr>
@@ -56,13 +65,15 @@
 
     <script>
         var app = angular.module("myapp", ['ds.clock']);
-        app.controller("appController", function($scope, $interval) {
+        app.controller("appController", function($scope, $interval, $http) {
             var CLIENT_ID = '513880758862-364s789hashsaemstnv59po2un8gjo1l.apps.googleusercontent.com';
             var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
             var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 
             $scope.isLoggedIn = false;
             $scope.buttonStr = 'SIGN IN';
+
+            var appJustStated = true;
 
             angular.element(function() {
                 console.log('PAGE LOADING COMPLETE!');
@@ -89,7 +100,8 @@
                 gapi.client.init({
                     discoveryDocs: DISCOVERY_DOCS,
                     clientId: CLIENT_ID,
-                    scope: SCOPES
+                    scope: SCOPES,
+                    cookie_policy: 'single_host_origin'
                 }).then(function() {
                     gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 
@@ -101,6 +113,14 @@
                 if(isSignedIn) {
                     console.log('SIGN IN');
                     $scope.isLoggedIn = true;
+
+                    gapi.client.load('oauth2', 'v2', function() {
+                        gapi.client.oauth2.userinfo.get().execute(function(resp) {
+                            console.log(resp);
+                            $scope.UserName= resp.name;
+                            console.log(resp);
+                        });
+                    });
                 }
                 else {
                     console.log('LOGGED OUT');

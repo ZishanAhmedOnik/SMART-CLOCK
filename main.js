@@ -16,13 +16,13 @@ function createWindow() {
             nodeIntegration: false
         },
 	fullscreen: true,
-	frame: false,
-	toolbar: false,
-	'auto-hide-menu-bar': true
+	//frame: false,
+	//toolbar: false,
+	//'auto-hide-menu-bar': true
      });
 
-     win.setMenuBarVisibility(false);
-     win.setAutoHideMenuBar(true);
+     //win.setMenuBarVisibility(false);
+     //win.setAutoHideMenuBar(true);
     
     /*win.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
@@ -30,6 +30,10 @@ function createWindow() {
         slashes: true
     }));*/
     win.loadURL('http://localhost:8000');
+
+    win.webContents.session.clearCache(function() {
+        
+    });
 }
 
 connect().use(serverStatic(__dirname))
