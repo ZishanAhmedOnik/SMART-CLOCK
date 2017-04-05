@@ -43,7 +43,7 @@
 
         <table class="table" border="1" style="height: 80%">
             <tr>
-                <td style="width: 40%">
+                <td style="width: 53%">
                     <div class="mydiv">
                         <ds-widget-clock show-analog></ds-widget-clock>
                         <div style="text-align: center;">{{ clock | date:'hh:mm:ss' }}</div>
@@ -56,7 +56,7 @@
                     </div>
 
                     <div class="{{ isLoggedIn ? 'userInfoDivVisible' : 'userInfoDivHidden' }}">
-                        Hello {{ UserName }}
+                        Hello {{ UserName }}  
                     </div>
                 </td>
             </tr>
@@ -75,6 +75,8 @@
 
             var appJustStated = true;
 
+            var refreshIntervalId = 0;
+
             angular.element(function() {
                 console.log('PAGE LOADING COMPLETE!');
                 handleClienLoad();
@@ -84,12 +86,14 @@
                 $scope.buttonStr = 'SIGN OUT';
                 $scope.isLoggedIn = true;
                 gapi.auth2.getAuthInstance().signIn();
+
             }
 
             $scope.logout = function() {
                 $scope.buttonStr = 'SIGN IN';
                 $scope.isLoggedIn = false;
                 gapi.auth2.getAuthInstance().signOut();
+                clearInterval(refreshIntervalId);
             }
 
             function handleClienLoad() {
@@ -119,7 +123,13 @@
                             console.log(resp);
                             $scope.UserName= resp.name;
 
-                            listUpcomingEvents();
+                          //  listUpcomingEvents();
+                         
+
+							/* later */
+							
+                            
+                             refreshIntervalId = setInterval(listUpcomingEvents,1000);
                         });
                     });
                 }
@@ -141,6 +151,7 @@
                     console.log(response.result.items);
                 });
             }
+            
 
             function appendPre(message) {
                 var pre = document.getElementById('content');
