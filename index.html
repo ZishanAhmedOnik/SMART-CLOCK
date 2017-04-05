@@ -56,7 +56,6 @@
                     </div>
 
                     <div class="{{ isLoggedIn ? 'userInfoDivVisible' : 'userInfoDivHidden' }}">
-                       
                         Hello {{ UserName }}
                     </div>
                 </td>
@@ -66,10 +65,12 @@
 
     <script>
         var app = angular.module("myapp", ['ds.clock']);
+        
         app.controller("appController", function($scope, $interval, $http) {
             var CLIENT_ID = '513880758862-364s789hashsaemstnv59po2un8gjo1l.apps.googleusercontent.com';
             var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
             var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+             var refreshIntervalId = 0;
 
             $scope.isLoggedIn = false;
             $scope.buttonStr = 'SIGN IN';
@@ -85,12 +86,15 @@
                 $scope.buttonStr = 'SIGN OUT';
                 $scope.isLoggedIn = true;
                 gapi.auth2.getAuthInstance().signIn();
-            }
+                
 
             $scope.logout = function() {
                 $scope.buttonStr = 'SIGN IN';
                 $scope.isLoggedIn = false;
                 gapi.auth2.getAuthInstance().signOut();
+                clearInterval(refreshIntervalId);
+            }
+
             }
 
             function handleClienLoad() {
@@ -119,8 +123,10 @@
                         gapi.client.oauth2.userinfo.get().execute(function(resp) {
                             console.log(resp);
                             $scope.UserName= resp.name;
-
+                            
                             listUpcomingEvents();
+                             refreshIntervalId = setInterval(listUpcomingEvents, 1000);
+
                         });
                     });
                 }
