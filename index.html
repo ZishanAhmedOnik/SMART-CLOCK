@@ -43,14 +43,14 @@
 
         <table class="table" border="1" style="height: 80%">
             <tr>
-                <td style="width: 40%">
+                <td style="width: 55%">
                     <div class="mydiv">
                         <ds-widget-clock show-analog></ds-widget-clock>
                         <div style="text-align: center;">{{ clock | date:'hh:mm:ss' }}</div>
                     </div>
                 </td>
 
-                <td style="width: 60%">
+                <td style="width: 45%">
                     <div style="text-align: center;">
                         <button class="btn btn-success" ng-click="isLoggedIn ? logout() : login()">{{ buttonStr }}</button>
                     </div>
