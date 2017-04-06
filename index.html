@@ -145,13 +145,7 @@
                     'maxResults': 10,
                     'orderBy': 'startTime'
                 }).then(function(response) {
-                    //console.log(response.result.items);
-
-                    for(var i = 0; i < response.result.items.length; i++) {
-                    	console.log(response.result.items[i].summary);
-                    	console.log(response.result.items[i].start);
-                    	console.log(response.result.items[i].end);
-                    }
+                    console.log(response.result.items);
                 });
             }
 
