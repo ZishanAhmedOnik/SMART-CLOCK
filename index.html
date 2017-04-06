@@ -86,15 +86,13 @@
                 $scope.buttonStr = 'SIGN OUT';
                 $scope.isLoggedIn = true;
                 gapi.auth2.getAuthInstance().signIn();
-                
+            }
 
             $scope.logout = function() {
                 $scope.buttonStr = 'SIGN IN';
                 $scope.isLoggedIn = false;
                 gapi.auth2.getAuthInstance().signOut();
                 clearInterval(refreshIntervalId);
-            }
-
             }
 
             function handleClienLoad() {
