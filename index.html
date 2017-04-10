@@ -34,22 +34,24 @@
                 fill: #FF0000;
             }
 
+            .toggleBackGround .table {
+                background-color: #FF0000;
+                border: 0.5px solid #000000 !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+
+            .toggleBackGround .scheduleTable > thead > tr > th,
+            .toggleBackGround .scheduleTable > thead > tr > td,
+            .toggleBackGround .scheduleTable > tbody > tr > td {
+                border: 0.5px solid #000000 !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+
         </style>
     </head>
 
     <body ng-app="myapp" ng-controller="appController" ng-click="touchBody()" ng-class="{ 'toggleBackGround' : toggleClass }">
-        <!--<div class="row">
-            <div class="mydiv col-sm-1" style="border: solid;">
-                <ds-widget-clock show-analog></ds-widget-clock>
-                <div>{{ clock | date:'HH:mm:ss' }}</div>
-            </div>
-
-            <div class="col-sm-1" style="border: solid;">
-                <h1>HI</h1>
-            </div>
-        </div>-->
-
-        <table class="table" border="1" style="height: 80%">
+        <table class="table" style="height: 80%">
             <tr>
                 <td style="width: 55%">
                     <div class="mydiv">
@@ -59,18 +61,25 @@
                 </td>
 
                 <td style="width: 45%">
-                    <div style="text-align: center;">
+                    <div class="{{ isLoggedIn ? 'userInfoDivHidden' : 'userInfoDivVisible' }}">
                         <button class="btn btn-success" ng-click="isLoggedIn ? logout() : login()">{{ buttonStr }}</button>
                     </div>
 
                     <div class="{{ isLoggedIn ? 'userInfoDivVisible' : 'userInfoDivHidden' }}">
                         Hello {{ UserName }}
 
-                        <div style="text-align: center;">
-                            <div ng-repeat="event in eventList">
+                        <div class="table-responsive">
+                            <!--<div ng-repeat="event in eventList">
                                 {{ event.start.dateTime | date:"h:mma" }}
                                 {{ event.summary }}
-                            </div>
+                            </div>-->
+
+                            <table class="table scheduleTable">
+                                <tr ng-repeat="event in eventList">
+                                    <td>{{ event.start.dateTime | date:"h:mma" }}</td>
+                                    <td>{{ event.summary }}</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </td>
