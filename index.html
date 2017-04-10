@@ -26,10 +26,18 @@
                 visibility: hidden;
             }
 
+            .toggleBackGround {
+                background-color: #FF0000;
+            }
+            
+            .toggleBackGround .widget-clock .clock-face {
+                fill: #FF0000;
+            }
+
         </style>
     </head>
 
-    <body ng-app="myapp" ng-controller="appController">
+    <body ng-app="myapp" ng-controller="appController" ng-click="touchBody()" ng-class="{ 'toggleBackGround' : toggleClass }">
         <!--<div class="row">
             <div class="mydiv col-sm-1" style="border: solid;">
                 <ds-widget-clock show-analog></ds-widget-clock>
@@ -57,6 +65,13 @@
 
                     <div class="{{ isLoggedIn ? 'userInfoDivVisible' : 'userInfoDivHidden' }}">
                         Hello {{ UserName }}
+
+                        <div style="text-align: center;">
+                            <div ng-repeat="event in eventList">
+                                {{ event.start.dateTime | date:"h:mma" }}
+                                {{ event.summary }}
+                            </div>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -70,12 +85,19 @@
             var CLIENT_ID = '513880758862-364s789hashsaemstnv59po2un8gjo1l.apps.googleusercontent.com';
             var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
             var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
-             var refreshIntervalId = 0;
+            
+            var appJustStated = true;
+            var refreshIntervalId = 0;
+            var minutes = 0;
 
             $scope.isLoggedIn = false;
             $scope.buttonStr = 'SIGN IN';
+            $scope.EVENT_SUMMERY = '';
+            $scope.toggleClass = false;
+            $scope.hasNewEvent = false;
 
-            var appJustStated = true;
+            $scope.eventList = [];
+            $scope.ignoreList = [];
 
             angular.element(function() {
                 console.log('PAGE LOADING COMPLETE!');
@@ -93,6 +115,24 @@
                 $scope.isLoggedIn = false;
                 gapi.auth2.getAuthInstance().signOut();
                 clearInterval(refreshIntervalId);
+
+                $scope.eventList = [];
+                $scope.ignoreList = [];
+            }
+
+            $scope.touchBody = function() {
+                for(var i = 0; i < $scope.eventList.length; i++) {
+                    $scope.ignoreList.push(
+                        {
+                            start: $scope.eventList[i].start,
+                            summary: $scope.eventList[i].summary
+                        }
+                    );
+                }
+
+                //$scope.eventList = [];
+                $scope.toggleClass = false;
+                $scope.hasNewEvent = false;
             }
 
             function handleClienLoad() {
@@ -122,8 +162,8 @@
                             console.log(resp);
                             $scope.UserName= resp.name;
                             
-                            listUpcomingEvents();
-                             refreshIntervalId = setInterval(listUpcomingEvents, 1000);
+                            //listUpcomingEvents();
+                            refreshIntervalId = setInterval(listUpcomingEvents, 1000);
 
                         });
                     });
@@ -144,13 +184,49 @@
                     'orderBy': 'startTime'
                 }).then(function(response) {
                     //console.log(response.result.items);
+                    //$scope.toggleClass = !$scope.toggleClass;
 
                     for(var i = 0; i < response.result.items.length; i++) {
+                        /*console.log("CURRENT TIME:", new Date());
                     	console.log(response.result.items[i].summary);
                     	console.log(response.result.items[i].start);
-                    	console.log(response.result.items[i].end);
+                    	console.log(response.result.items[i].end);*/
+
+
+                        var diff = Math.abs(new Date() - new Date(response.result.items[i].start.dateTime));
+                        minutes = Math.floor((diff/1000)/60);
+                        console.log(minutes);
+
+                        if(minutes <= 60) {
+                            //$scope.EVENT_SUMMERY = response.result.items[i].summary;
+                            if(!findInArray($scope.eventList, response.result.items[i].summary)
+                                && !findInArray($scope.ignoreList, response.result.items[i].summary)
+                            ) {
+                                $scope.eventList.push(
+                                    {
+                                        start: response.result.items[i].start,
+                                        summary: response.result.items[i].summary
+                                    }
+                                );
+                                $scope.hasNewEvent = true;
+                            }
+                        }
                     }
                 });
+
+                if($scope.hasNewEvent) {
+                    $scope.toggleClass = !$scope.toggleClass;
+                }
+            }
+
+            function findInArray(arr, item) {
+                for(var i = 0; i < arr.length; i++) {
+                    if(arr[i].summary === item) {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             function appendPre(message) {
