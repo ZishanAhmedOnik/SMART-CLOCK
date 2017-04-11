@@ -15,14 +15,14 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: false
         },
-	fullscreen: true,
-	//frame: false,
-	//toolbar: false,
-	//'auto-hide-menu-bar': true
+        fullscreen: true,
+        frame: false,
+        toolbar: false,
+        'auto-hide-menu-bar': true
      });
 
-     //win.setMenuBarVisibility(false);
-     //win.setAutoHideMenuBar(true);
+     win.setMenuBarVisibility(false);
+     win.setAutoHideMenuBar(true);
     
     /*win.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
