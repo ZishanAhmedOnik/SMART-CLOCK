@@ -48,7 +48,7 @@
         </style>
     </head>
 
-    <body ng-app="myapp" ng-controller="appController" ng-click="touchBody()" ng-class="{ 'toggleBackGround' : toggleClass }">
+    <body ng-app="myapp" ng-controller="appController" ng-mousemove="touchBody()" ng-class="{ 'toggleBackGround' : toggleClass }">
         <table class="table" style="height: 80%">
             <tr>
                 <td style="width: 55%">
@@ -202,7 +202,7 @@
 
                         var diff = Math.abs(new Date() - new Date(response.result.items[i].start.dateTime));
                         minutes = Math.floor((diff/1000)/60);
-                        console.log(minutes);
+                        //console.log(minutes);
 
                         if(minutes <= 60) {
                             //$scope.EVENT_SUMMERY = response.result.items[i].summary;
